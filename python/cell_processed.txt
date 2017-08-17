@@ -1,0 +1,11 @@
+both-Limb-Bud-Progress-Zone-Cells
+both-Prechordal-Mesenchyme-Osteochondro-Progenitor-Cells
+both-Branchial-Arch-1-Osteochondro-Progenitor-Cells
+both-Branchial-Arch-2-Osteochondro-Progenitor-Cells
+both-Sacral-Mesenchymal-Sclerotome-Sclerotome-Cells
+both-Cervical-Mesenchymal-Sclerotome-Sclerotome-Cells
+both-Lumbar-Mesenchymal-Sclerotome-Sclerotome-Cells
+both-Thoracic-Mesenchymal-Sclerotome-Sclerotome-Cells
+bone-Head-Mesenchyme-Paraxial-Mesoderm-Cells
+bone-Hematopoietic-Bone-Marrow-Osteoclast-Precursor-Cells
+cartilage-Notochord-Notochord-Cells

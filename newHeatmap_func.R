@@ -86,7 +86,7 @@ degMatchCt4sp<-function(sp, dat){
 # input: p value
 # return: starLevel value
 starLevel<-function(p){
-  if(p>0.05) return("")
+  if(p>0.05 | p<=0) return("")
   else if(p<0.000001) return("****")
   else if(p<0.00001) return("***")
   else if(p<0.001) return("**")
@@ -157,11 +157,17 @@ ossiScore<-function(matchedCt, prior_prob, index){
 # output: a ggplot2 object
 # dependency: global "hgt", a dara.frame; global "geneset", global "samples"
 ########################################################################################
-hm<-function(dat, type = "all", sqr = T){
+hm<-function(dat, type = "all", sqr = T, hgtStar = T){
   # level<-sapply(hgt[,4],star2num)
   # level<-as.data.frame(cbind(samples,level))
   # colnames(level)<-c("sample","starLevel")
-  spName<-paste(hgt[,4],samples)
+  if(hgtStar == T){
+    spName<-paste(hgt[,4],samples)
+  }
+  else{
+    spName<-samples
+  }
+  
   
   # ggplot2
   plot<-ggplot(dat, aes(sample, ID, label = dup)) +
@@ -222,7 +228,7 @@ wholeDataSet<-function(fdr,fc,files, aggr = T){
     for(i in 1:length(files)){
       dat<-read.csv(paste0(files[i],"_LFC.txt"),header = T, sep = "\t")
       dat<-subset(dat,dat$padj<fdr)
-      dat<-subset(dat,dat$LFC>log2(fc) | dat$LFC < log2((1/fc)))
+      # dat<-subset(dat,dat$LFC>log2(fc) | dat$LFC < log2((1/fc)))
       dat<-cbind(dat, rep(files[i],nrow(dat)))
       colnames(dat)[4]<-"sample"
       
@@ -242,12 +248,32 @@ wholeDataSet<-function(fdr,fc,files, aggr = T){
         
         dat$dup<-sapply(dat$dup,bool2star)
       }
+      dat<-subset(dat,dat$LFC>log2(fc) | dat$LFC < log2((1/fc)))
       dat_all<-rbind(dat_all,dat)
     }
     write.table(dat_all,dataFile,quote = F, sep = "\t")
   }
   return(dat_all)
 }
+
+
+# ori_whole_data_dup_del
+origWhole<-function(files){
+  dat_all<-c()
+  for(i in 1:length(files)){
+    dat<-read.csv(paste0(files[i],"_LFC.txt"),header = T, sep = "\t")
+    dat<-cbind(dat, rep(files[i],nrow(dat)))
+    colnames(dat)[4]<-"sample"
+    
+    dupIndex<-which(duplicated(dat$ID))
+    if(length(dupIndex)!=0){
+      dat<-dat[-dupIndex,]
+    }
+    dat_all<-rbind(dat_all,dat)
+  }
+  write.table(dat_all,"ori_whole_data_dup_del",quote = F, sep = "\t")
+}
+
 ########################################################################################
 
 
@@ -255,7 +281,7 @@ wholeDataSet<-function(fdr,fc,files, aggr = T){
 ########################################################################################
 # 3. data subset
 # 
-# Dependency: global "samples"
+# Dependency: global "samples",global "gs"(for function2)
 # 
 # input: gs means a list of genes
 #
@@ -270,6 +296,14 @@ dataSubset<-function(dat, gs, op){
   
   # fix row/col sequence
   dat<-transform(dat, sample=factor(sample, levels = unique(samples)))
+  if(op==1) return(transform(dat, ID=factor(ID, levels = unique(ID))))
+  if(op==2) return(transform(dat, ID=factor(ID, levels = unique(gs))))
+}
+
+dataSubset4sps<-function(dat, sps,op=1){
+  dat<-dat[dat$sample%in%sps,] 
+  # fix row/col sequence
+  dat<-transform(dat,sample=factor(sample, levels = unique(sps)))
   if(op==1) return(transform(dat, ID=factor(ID, levels = unique(ID))))
   if(op==2) return(transform(dat, ID=factor(ID, levels = unique(gs))))
 }
@@ -345,7 +379,7 @@ HGTpval4samples<-function(dat, sampleList, geneset, fdr, fc){
     pval<-c(pval,p)
   }
   
-  padj<-p.adjust(pval,"fdr") # ADJUST
+  padj<-p.adjust(pval,"fdr",n = 8000) # ADJUST; add an n=6000 to restrict the hgt levels
   star<-sapply(padj,starLevel)
   
   pval<-cbind(sampleList,pval,padj, star)

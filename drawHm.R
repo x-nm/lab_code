@@ -49,6 +49,7 @@ dpt<-function(x){
 # mark=13:heatmap with unclustered rows and rownames; 
 # 23: unclustered rows and rownames and display numbers.
 # 14, 24: unclusterd rows and cols 
+# 04: unclustered, no row name, no values
 hm<-function(matrix, mark){
   depth<-max(dpt(min(matrix, na.rm = T)), dpt(max(matrix, na.rm = T)))
   c<-seq(-(depth+0.5),(depth), 0.5)
@@ -62,6 +63,7 @@ hm<-function(matrix, mark){
   else if(mark==23) pheatmap(matrix, border_color = NA, breaks = c, color = col, display_numbers = T, cluster_rows = F) # TO SHOW THE NA
   else if(mark==14) pheatmap(matrix, border_color = NA, breaks = c, color = col, cluster_rows = F, cluster_cols = F) # only row.names
   else if(mark==24) pheatmap(matrix, border_color = NA, breaks = c, color = col, display_numbers = T, cluster_rows = F, cluster_cols = F) # TO SHOW THE NA
+  else if(mark==04) pheatmap(matrix, border_color = NA, breaks = c, color = col, show_rownames = F, cluster_rows = F, cluster_cols = F)
 }
 # 0.3
 ehm<-function(matrix){

@@ -41,7 +41,7 @@ ID<-geneId2Sym[index,2]
 LFC<-cbind(ID[1:41554],resOrdered[1:41554,]) 
 
 indexExclude<-which(LFC[,1]=="")
-LFC<-LFC[-indexExclude,] # NA excluded, 22682 left
+LFC<-LFC[-indexExclude,] # "" excluded, 22682 left (not all like that, left with different # of NAs)
 colnames(LFC)[1]<-"ID"
 
 write.table(LFC,file=paste("output/",query, "_LFC.txt", sep = ""), sep = "\t", quote = F)

@@ -5,22 +5,21 @@
 # Output: 
 #	MARKER .gmx file: MARKERS-CART-cranial-neural-crest-cells.gmx
 #	EXPRESS .gmx file: EXPR-CART-cranial-neural-crest-cells.gmx
-#	SIGNAL .【】【】
 #	with url and comments in the second line, about EXPRESSION LEVEL, +/-
 # 
 #  4s for a request
 #
 # 2017.6.2 by xnm
-# 2017.6.26 modified, added fetch signal list
 
 import urllib2
 import re
 
 # INPUT
 tissue = "BONE"
-cell = "zeugopod-mesenchymal-condensate-cells"
+cell = "Membranous-Facial-Bones-Intramembranous-Preosteoblasts"
+cardUrl = "in-vivo-development/bone/membranous-facial-bones/intramembranous-preosteoblasts"
+
 symbol = tissue+"-"+cell
-cardUrl = "in-vivo-development/limb/zeugopod/mesenchymal-condensate-cells"
 trunk = "https://discovery.lifemapsc.com/"
 url = trunk + cardUrl
 
@@ -43,7 +42,7 @@ loc4TargetText = re.compile(r'{ GeneExpression:.*}') # in one line, no need to u
 text = loc4TargetText.findall(webpage)
 text = text[0]
 
-loc4Item = re.compile(r'{"ID":.+?}')
+loc4Item = re.compile(r'{"CellID":.+?}')
 #loc4Item = re.compile(r'{"TCCellID":.+?}') # FOR STEM CELL PAGES
 geneSymbol = re.compile(r'(?<="GeneSymbol":")[\w,-]+')
 exprLevel = re.compile(r'(?<="ExpressionLevel":)-?\d')
